@@ -13,7 +13,7 @@ public class Renderer {
         for (int y = 1; y <= map.getMaxCoordinate(Axes.Y); y++) {
             for (int x = 1; x <= map.getMaxCoordinate(Axes.X); x++){
                 Coordinates coordinates = new Coordinates(x,y);
-                String entitySprite = " ";
+                String entitySprite = "\uD83D\uDFEB";
                 if(!map.isEmpty(coordinates)){
                     entitySprite = setEntitySprite(map.getEntity(coordinates));
                 }
@@ -37,7 +37,7 @@ public class Renderer {
             case "Predator":
                 return "\uD83E\uDD8A";
             default:
-                return " ";
+                return "\uD83D\uDFEB";
         }
     }
 }
