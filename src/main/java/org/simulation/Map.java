@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class Map {
     private final int MAX_X = 10;
     private final int MAX_Y = 10;
-    private HashMap<Coordinates, Entity> entities = new HashMap<>();
+    private HashMap<Coordinates, Entity> entityStorage = new HashMap<>();
 
 
 
@@ -17,5 +17,18 @@ public class Map {
         }else {
             return MAX_Y;
         }
+    }
+
+    public void setEntity(Entity entity, Coordinates coordinates){
+        entity.setCoordinates(coordinates);
+        entityStorage.put(coordinates, entity);
+    }
+
+    public boolean isEmpty(Coordinates coordinates){
+        return !entityStorage.containsKey(coordinates);
+    }
+
+    public Entity getEntity(Coordinates coordinates){
+        return entityStorage.get(coordinates);
     }
 }

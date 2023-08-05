@@ -8,4 +8,8 @@ public abstract class Entity {
     public Entity(Coordinates coordinates) {
         this.coordinates = coordinates;
     }
+
+    public void setCoordinates(Coordinates coordinates){
+        this.coordinates = coordinates;
+    }
 }
