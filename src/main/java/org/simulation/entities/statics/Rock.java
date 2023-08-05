@@ -1,4 +1,10 @@
 package org.simulation.entities.statics;
 
-public class Rock {
+import org.simulation.Coordinates;
+import org.simulation.entities.Entity;
+
+public class Rock extends Entity {
+    public Rock(Coordinates coordinates) {
+        super(coordinates);
+    }
 }
