@@ -1,4 +1,4 @@
-package org.simulation.action.spawn;
+package org.simulation.action.spawn.statics;
 
 import org.simulation.Coordinates;
 import org.simulation.Map;
