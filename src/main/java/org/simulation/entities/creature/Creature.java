@@ -13,7 +13,7 @@ public abstract class Creature extends Entity {
         super(coordinates, map);
     }
 
-    abstract void makeMove();
+    public abstract void makeMove();
 
     public int getHp() {
         return hp;
