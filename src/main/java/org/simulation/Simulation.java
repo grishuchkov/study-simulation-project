@@ -1,6 +1,7 @@
 package org.simulation;
 
 import org.simulation.action.Action;
+import org.simulation.action.MoveAction;
 import org.simulation.action.spawn.GrassSpawnAction;
 import org.simulation.action.spawn.creature.HerbivoreSpawnAction;
 import org.simulation.action.spawn.creature.PredatorSpawnAction;
@@ -16,6 +17,8 @@ public class Simulation {
     public void test(){
         initAction(worldMap);
         consoleRenderer.render();
+        MoveAction moveAction = new MoveAction(worldMap);
+        moveAction.perform();
     }
 
     private void initAction(Map map){
