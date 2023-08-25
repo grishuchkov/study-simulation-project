@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Simulation {
     private final Map worldMap = new Map();
-    private final Renderer consoleRenderer = new Renderer(worldMap);
+    private final Renderer consoleRenderer = new ConsoleRenderer(worldMap);
     public void test(){
         initAction(worldMap);
         consoleRenderer.render();

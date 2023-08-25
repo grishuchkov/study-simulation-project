@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Map {
-    private final int MAX_X = 20;
-    private final int MAX_Y = 15;
+    private final int MAX_X = 15;
+    private final int MAX_Y = 10;
     private HashMap<Coordinates, Entity> entityStorage = new HashMap<>();
 
     public int getMaxCoordinate(Axes axis){
