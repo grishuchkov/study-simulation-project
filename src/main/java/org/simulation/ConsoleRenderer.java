@@ -10,11 +10,11 @@ public class ConsoleRenderer implements Renderer{
     }
 
     public void render(){
-        for (int y = 1; y <= map.getMaxCoordinate(Axes.Y); y++) {
-            for (int x = 1; x <= map.getMaxCoordinate(Axes.X); x++){
+        for (int y = 1; y <= map.getMaxY(); y++) {
+            for (int x = 1; x <= map.getMaxX(); x++){
                 Coordinates coordinates = new Coordinates(x,y);
                 String entitySprite = "⬜";
-                if(!map.isEmpty(coordinates)){
+                if(!map.coordinateIsEmpty(coordinates)){
                     entitySprite = setEntitySprite(map.getEntity(coordinates));
                 }
                 System.out.print(entitySprite);
