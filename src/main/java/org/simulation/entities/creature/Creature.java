@@ -1,21 +1,18 @@
 package org.simulation.entities.creature;
 
+import org.simulation.AStarPathSearch;
 import org.simulation.Coordinates;
 import org.simulation.Map;
 import org.simulation.entities.Entity;
 
 public abstract class Creature extends Entity {
 
-    protected int speed = 1;
-    protected int hp = 100;
 
     public Creature(Coordinates coordinates, Map map) {
         super(coordinates, map);
     }
 
-    public abstract void makeMove();
+    protected final AStarPathSearch pathSearch = new AStarPathSearch();
 
-    public int getHp() {
-        return hp;
-    }
+    public abstract void makeMove();
 }
