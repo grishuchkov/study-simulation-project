@@ -14,14 +14,16 @@ import java.util.List;
 public class Simulation {
     private final Map worldMap = new Map();
     private final Renderer consoleRenderer = new ConsoleRenderer(worldMap);
-    public void test(){
+
+    public void test() {
         initAction(worldMap);
         consoleRenderer.render();
         MoveAction moveAction = new MoveAction(worldMap);
         moveAction.perform();
+        consoleRenderer.render();
     }
 
-    private void initAction(Map map){
+    private void initAction(Map map) {
         List<Action> initActions = new LinkedList<>();
 
         initActions.add(new RockSpawnAction(map));
@@ -30,8 +32,8 @@ public class Simulation {
         initActions.add(new PredatorSpawnAction(map));
         initActions.add(new HerbivoreSpawnAction(map));
 
-        for (int i = 0; i < initActions.size(); i++) {
-            initActions.get(i).perform();
+        for (Action action : initActions) {
+            action.perform();
         }
     }
 }

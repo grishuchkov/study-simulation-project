@@ -15,20 +15,21 @@ public abstract class SpawnAction<T extends Entity> extends Action {
     @Override
     public void perform() {
         int currentRate = 0;
-        while(currentRate < rate){
+        while (currentRate < rate) {
             Coordinates coordinates = map.getEmptyRandomCoordinates();
             map.setEntity(spawnEntity(coordinates), coordinates);
             currentRate++;
         }
     }
 
-    protected void setRate(int requiredNumberEntities){
+    protected void setRate(int requiredNumberEntities) {
         int size = map.getSize();
-        if(size > 10 && requiredNumberEntities <= size){
+        if (size > 10 && requiredNumberEntities <= size) {
             rate = requiredNumberEntities;
-        }else {
+        } else {
             rate = 1;
         }
     }
+
     protected abstract T spawnEntity(Coordinates coordinates);
 }

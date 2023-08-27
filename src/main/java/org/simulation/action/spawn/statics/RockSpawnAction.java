@@ -8,7 +8,7 @@ import org.simulation.entities.statics.Rock;
 public class RockSpawnAction extends SpawnAction<Rock> {
     public RockSpawnAction(Map map) {
         super(map);
-        setRate(4);
+        setRate(15);
     }
 
     @Override

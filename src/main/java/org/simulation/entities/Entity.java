@@ -12,11 +12,11 @@ public abstract class Entity {
         this.map = map;
     }
 
-    public void setCoordinates(Coordinates coordinates){
+    public void setCoordinates(Coordinates coordinates) {
         this.coordinates = coordinates;
     }
 
-    public Coordinates getCoordinates(){
+    public Coordinates getCoordinates() {
         return coordinates;
     }
 }

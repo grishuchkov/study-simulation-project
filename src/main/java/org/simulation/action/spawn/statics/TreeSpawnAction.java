@@ -8,7 +8,7 @@ import org.simulation.entities.statics.Tree;
 public class TreeSpawnAction extends SpawnAction<Tree> {
     public TreeSpawnAction(Map map) {
         super(map);
-        setRate(10);
+        setRate(15);
     }
 
     @Override
