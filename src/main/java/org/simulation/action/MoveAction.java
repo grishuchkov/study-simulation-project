@@ -12,9 +12,9 @@ public class MoveAction extends Action {
 
     @Override
     public void perform() {
-        List<Creature> entitiesList = map.getListEntitiesByClass(Creature.class);
+        List<Creature> creaturesList = map.getListEntitiesByClass(Creature.class);
 
-        for (Creature creature : entitiesList) {
+        for (Creature creature : creaturesList) {
             creature.makeMove();
         }
     }
