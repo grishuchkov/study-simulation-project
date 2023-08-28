@@ -3,66 +3,89 @@ package org.simulation;
 import org.simulation.entities.Entity;
 import org.simulation.entities.Grass;
 import org.simulation.entities.creature.Herbivore;
+import org.simulation.entities.creature.Predator;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 public class AStarPathSearch {
-    public List<Coordinates> findPath(Coordinates startCoordinates, Map map, Class<? extends Entity> aimClass) {
-        Optional<List<? extends Entity>> targetListOptional = Optional.ofNullable(setTargetList(map, aimClass));
+    public List<Coordinates> findPath(Entity startEntity, Map map) {
 
-        if (!targetListOptional.isPresent()) {
-            //todo return result if NULL
+        Optional<List<? extends Entity>> targetListOptional = Optional.ofNullable(setTargetListForEntityByClass(map, startEntity.getClass()));
+        List<Coordinates> finalRoute = new ArrayList<>();
+
+        if (targetListOptional.isEmpty()) {
+            return finalRoute;
         }
+
+        Coordinates startCoordinates = startEntity.getCoordinates();
 
         List<? extends Entity> targetEntitiesList = targetListOptional.get();
         Coordinates targetEntityCoordinates = findNearestTarget(startCoordinates, targetEntitiesList);
 
-        return aStarSearchAlgorithm(startCoordinates, targetEntityCoordinates, map);
+        finalRoute = aStarSearchAlgorithm(startCoordinates, targetEntityCoordinates, map);
+
+        return finalRoute;
     }
 
-    //todo Doesn't work. Bug with ways. FIX!!!
+    private Coordinates findNearestTarget(Coordinates startCoordinates, List<? extends Entity> targetEntities) {
+
+        int minDistance = Integer.MAX_VALUE;
+        int minDistanceEntityIndex = 0;
+
+
+        for (int i = 0; i < targetEntities.size(); i++) {
+            int distance = getChebyshevDistanceToTarget(startCoordinates, targetEntities.get(i).getCoordinates());
+
+            if (distance <= minDistance) {
+                minDistance = distance;
+                minDistanceEntityIndex = i;
+            }
+        }
+
+        return targetEntities.get(minDistanceEntityIndex).getCoordinates();
+    }
     private List<Coordinates> aStarSearchAlgorithm(Coordinates start, Coordinates target, Map map) {
 
-        List<SearchNode> closed = new ArrayList<>();
-        List<SearchNode> open = new ArrayList<>();
-        List<Coordinates> route = new ArrayList<>();
-        List<Coordinates> twoLastCoordinates = new ArrayList<>();
+        HashMap<Coordinates, SearchNode> closed = new HashMap<>();
 
+        List<SearchNode> open = new ArrayList<>();
         SearchNode startNode = new SearchNode(start);
         SearchNode targetNode = new SearchNode(target);
+
+        startNode.setCoordinatesBefore(start);
         startNode.setG(0);
-        startNode.setF(startNode.getG() + getManhattanDistanceToTarget(start, target));
+        startNode.setF(startNode.getG() + getChebyshevDistanceToTarget(start, target));
         open.add(startNode);
 
-        while (!open.isEmpty()) {
+        int brakeIndex = 0;
+
+        while (!open.isEmpty() & brakeIndex < map.getSize()) {
+            brakeIndex++;
             SearchNode current = getNodeWithMinF(open);
 
             if (current.getCoordinates().equals(targetNode.getCoordinates())) {
-                twoLastCoordinates.add(current.getCoordinatesBefore());
-                twoLastCoordinates.add(current.getCoordinates());
+                closed.put(current.getCoordinates(), current);
                 break;
             }
 
             open.remove(current);
 
-            if (!closed.contains(current)) {
-                closed.add(current);
+            if (!closed.containsKey(current.getCoordinates())) {
+                closed.put(current.getCoordinates(), current);
             }
 
             List<SearchNode> neighbours = getNeighbors(current, map);
             removeStaticNeighbours(neighbours, map);
 
             for (SearchNode neighbor : neighbours) {
-                int tmpG = current.getG() + getManhattanDistanceToTarget(current.getCoordinates(), neighbor.getCoordinates());
+
+                int tmpG = current.getG() + getChebyshevDistanceToTarget(current.getCoordinates(), neighbor.getCoordinates());
 
                 if (!open.contains(neighbor) || tmpG < neighbor.getG()) {
-                    neighbor.setCoordinatesBefore(current.getCoordinates());
                     neighbor.setG(tmpG);
-                    neighbor.setF(neighbor.getG() + getManhattanDistanceToTarget(neighbor.getCoordinates(), targetNode.getCoordinates()));
+                    neighbor.setF(neighbor.getG() + getChebyshevDistanceToTarget(neighbor.getCoordinates(), targetNode.getCoordinates()));
+                    neighbor.setCoordinatesBefore(current.getCoordinates());
                 }
                 if (!open.contains(neighbor)) {
                     open.add(neighbor);
@@ -70,10 +93,19 @@ public class AStarPathSearch {
             }
         }
 
-        for (int i = 1; i < closed.size(); i++) {
-            route.add(closed.get(i).getCoordinatesBefore());
+        return restoreRoute(start, target, closed);
+    }
+
+    private static List<Coordinates> restoreRoute(Coordinates start, Coordinates target, HashMap<Coordinates, SearchNode> closed) {
+        List<Coordinates> route = new ArrayList<>();
+
+        SearchNode node = closed.get(target);
+        while (node != null && !node.getCoordinates().equals(start)) {
+            route.add(node.getCoordinates());
+            node = closed.get(node.getCoordinatesBefore());
         }
-        route.addAll(twoLastCoordinates);
+        route.add(start);
+        Collections.reverse(route);
 
         return route;
     }
@@ -109,13 +141,13 @@ public class AStarPathSearch {
         }
     }
 
-    //todo BinarySearch and compare getNodeWithMinF() with findNearestTarget(). May be possible to unite.
+    //todo BinarySearch. getNodeWithMinF() compare with findNearestTarget(). May be possible to unite.
     private SearchNode getNodeWithMinF(List<SearchNode> nodes) {
         int minF = Integer.MAX_VALUE;
         int index = 0;
 
         for (int i = 0; i < nodes.size(); i++) {
-            if (nodes.get(i).getF() < minF) {
+            if (nodes.get(i).getF() <= minF) {
                 minF = nodes.get(i).getF();
                 index = i;
             }
@@ -124,39 +156,17 @@ public class AStarPathSearch {
         return nodes.get(index);
     }
 
-    private Coordinates findNearestTarget(Coordinates startCoordinates, List<? extends Entity> targetEntities) {
-
-        int minDistance = Integer.MAX_VALUE;
-        int minDistanceEntityIndex = 0;
-
-
-        for (int i = 0; i < targetEntities.size(); i++) {
-            int distance = getManhattanDistanceToTarget(startCoordinates, targetEntities.get(i).getCoordinates());
-
-            if (distance <= minDistance) {
-                minDistance = distance;
-                minDistanceEntityIndex = i;
-            }
-        }
-
-        return targetEntities.get(minDistanceEntityIndex).getCoordinates();
+    private int getChebyshevDistanceToTarget(Coordinates from, Coordinates to) {
+        return Math.max(Math.abs(to.getX() - from.getX()), Math.abs(to.getY() - from.getY()));
     }
 
-    private int getEuclideanDistanceToTarget(Coordinates from, Coordinates to) {
-        return (int) (Math.sqrt(Math.pow(to.getX() - from.getX(), 2) + Math.pow(to.getY() - from.getY(), 2)) * 10);
-    }
-
-    private int getManhattanDistanceToTarget(Coordinates from, Coordinates to) {
-        return Math.abs(to.getX() - from.getX()) + Math.abs(to.getY() - from.getY());
-    }
-
-    private static List<? extends Entity> setTargetList(Map map, Class<? extends Entity> aimClass) {
+    private static List<? extends Entity> setTargetListForEntityByClass(Map map, Class<? extends Entity> aimClass) {
         List<? extends Entity> list = null;
 
-        if (Grass.class.isAssignableFrom(aimClass)) {
+        if (Herbivore.class.isAssignableFrom(aimClass)) {
             list = map.getListEntitiesByClass(Grass.class);
         }
-        if (Herbivore.class.isAssignableFrom(aimClass)) {
+        if (Predator.class.isAssignableFrom(aimClass)) {
             list = map.getListEntitiesByClass(Herbivore.class);
         }
 
