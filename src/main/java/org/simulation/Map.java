@@ -1,6 +1,7 @@
 package org.simulation;
 
 import org.simulation.entities.Entity;
+import org.simulation.entities.creature.Creature;
 import org.simulation.entities.statics.Rock;
 import org.simulation.entities.statics.Tree;
 
@@ -10,8 +11,8 @@ import java.util.List;
 import java.util.Random;
 
 public class Map {
-    private final int MAX_X = 15;
-    private final int MAX_Y = 10;
+    private final int MAX_Y = 12;
+    private final int MAX_X = (int) (MAX_Y * 1.5);
     private final HashMap<Coordinates, Entity> entityStorage = new HashMap<>();
 
     public int getMaxX() {
@@ -81,5 +82,9 @@ public class Map {
 
     public Entity getEntity(Coordinates coordinates) {
         return entityStorage.get(coordinates);
+    }
+
+    public Creature getCreature(Coordinates coordinates) {
+        return (Creature) getEntity(coordinates);
     }
 }
