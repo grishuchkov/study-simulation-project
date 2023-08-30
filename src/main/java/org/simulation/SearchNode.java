@@ -1,8 +1,9 @@
 package org.simulation;
 
+import java.util.Objects;
+
 public class SearchNode {
     private Coordinates coordinates;
-
 
     private Coordinates coordinatesBefore;
 
@@ -19,12 +20,6 @@ public class SearchNode {
 
     public SearchNode(Coordinates coordinates) {
         this.coordinates = coordinates;
-    }
-
-    public SearchNode(Coordinates coordinates, int f, int g) {
-        this.coordinates = coordinates;
-        this.f = f;
-        this.g = g;
     }
 
     public Coordinates getCoordinates() {
@@ -60,4 +55,25 @@ public class SearchNode {
         this.g = g;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SearchNode node = (SearchNode) o;
+
+        if (f != node.f) return false;
+        if (g != node.g) return false;
+        if (!Objects.equals(coordinates, node.coordinates)) return false;
+        return Objects.equals(coordinatesBefore, node.coordinatesBefore);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = coordinates != null ? coordinates.hashCode() : 0;
+        result = 31 * result + (coordinatesBefore != null ? coordinatesBefore.hashCode() : 0);
+        result = 31 * result + f;
+        result = 31 * result + g;
+        return result;
+    }
 }
