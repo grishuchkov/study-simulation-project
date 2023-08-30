@@ -8,7 +8,8 @@ import org.simulation.entities.creature.Predator;
 import java.util.*;
 
 
-public class AStarPathSearch {
+public class AStarPathSearcher implements PathSearcher {
+    @Override
     public List<Coordinates> findPath(Entity startEntity, Map map) {
 
         Optional<List<? extends Entity>> targetListOptional = Optional.ofNullable(setTargetListForEntityByClass(map, startEntity.getClass()));
@@ -21,9 +22,11 @@ public class AStarPathSearch {
         Coordinates startCoordinates = startEntity.getCoordinates();
 
         List<? extends Entity> targetEntitiesList = targetListOptional.get();
-        Coordinates targetEntityCoordinates = findNearestTarget(startCoordinates, targetEntitiesList);
 
-        finalRoute = aStarSearchAlgorithm(startCoordinates, targetEntityCoordinates, map);
+        if (!targetEntitiesList.isEmpty()) {
+            Coordinates targetEntityCoordinates = findNearestTarget(startCoordinates, targetEntitiesList);
+            finalRoute = aStarSearchAlgorithm(startCoordinates, targetEntityCoordinates, map);
+        }
 
         return finalRoute;
     }
@@ -45,6 +48,7 @@ public class AStarPathSearch {
 
         return targetEntities.get(minDistanceEntityIndex).getCoordinates();
     }
+
     private List<Coordinates> aStarSearchAlgorithm(Coordinates start, Coordinates target, Map map) {
 
         HashMap<Coordinates, SearchNode> closed = new HashMap<>();
@@ -59,8 +63,7 @@ public class AStarPathSearch {
         open.add(startNode);
 
         int brakeIndex = 0;
-
-        while (!open.isEmpty() & brakeIndex < map.getSize()) {
+        while (!open.isEmpty() & brakeIndex < 100000) {
             brakeIndex++;
             SearchNode current = getNodeWithMinF(open);
 
@@ -76,7 +79,7 @@ public class AStarPathSearch {
             }
 
             List<SearchNode> neighbours = getNeighbors(current, map);
-            removeStaticNeighbours(neighbours, map);
+            removeUnsuitableNeighbours(neighbours, map, startNode);
 
             for (SearchNode neighbor : neighbours) {
 
@@ -104,7 +107,6 @@ public class AStarPathSearch {
             route.add(node.getCoordinates());
             node = closed.get(node.getCoordinatesBefore());
         }
-        route.add(start);
         Collections.reverse(route);
 
         return route;
@@ -129,17 +131,39 @@ public class AStarPathSearch {
         return neighbors;
     }
 
-    private static void removeStaticNeighbours(List<SearchNode> neighbors, Map map) {
+    private static void removeUnsuitableNeighbours(List<SearchNode> neighbors, Map map, SearchNode startNode) {
         Iterator<SearchNode> searchNodeIterator = neighbors.iterator();
 
         while (searchNodeIterator.hasNext()) {
-            SearchNode searchNode = searchNodeIterator.next();
+            SearchNode neighboursNode = searchNodeIterator.next();
 
-            if (map.isStaticEntity(searchNode.getCoordinates())) {
+            if (map.isStaticEntity(neighboursNode.getCoordinates()) | isUnsuitableNeighbours(startNode, neighboursNode, map)) {
                 searchNodeIterator.remove();
             }
         }
     }
+
+    private static boolean isUnsuitableNeighbours(SearchNode startEntity, SearchNode neighboursNode, Map map) {
+        Coordinates neighboursCoordinates = neighboursNode.getCoordinates();
+
+        if (map.coordinateIsEmpty(neighboursCoordinates)) {
+            return false;
+        }
+
+        Class<? extends Entity> startEntityClass = map.getEntity(startEntity.getCoordinates()).getClass();
+        Class<? extends Entity> neighboursClass = map.getEntity(neighboursCoordinates).getClass();
+
+        if (Herbivore.class.isAssignableFrom(startEntityClass) &
+                (Predator.class.isAssignableFrom(neighboursClass) | Herbivore.class.isAssignableFrom(neighboursClass))) {
+            return true;
+        }
+        if (Predator.class.isAssignableFrom(startEntityClass) &
+                (Grass.class.isAssignableFrom(neighboursClass) | Predator.class.isAssignableFrom(neighboursClass))) {
+            return true;
+        }
+        return false;
+    }
+
 
     //todo BinarySearch. getNodeWithMinF() compare with findNearestTarget(). May be possible to unite.
     private SearchNode getNodeWithMinF(List<SearchNode> nodes) {
