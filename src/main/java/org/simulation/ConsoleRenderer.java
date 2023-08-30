@@ -4,7 +4,7 @@ import org.simulation.entities.Entity;
 
 public class ConsoleRenderer implements Renderer {
 
-    Map map;
+    private Map map;
 
     public ConsoleRenderer(Map map) {
         this.map = map;
