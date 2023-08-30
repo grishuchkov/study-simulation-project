@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Map {
-    private final int MAX_Y = 12;
+    private final int MAX_Y = 10;
     private final int MAX_X = (int) (MAX_Y * 1.5);
     private final HashMap<Coordinates, Entity> entityStorage = new HashMap<>();
 
@@ -36,6 +36,43 @@ public class Map {
         return !entityStorage.containsKey(coordinates);
     }
 
+    private boolean coordinateIsOutsideOfMap(Coordinates coordinates) {
+        int x = coordinates.getX();
+        int y = coordinates.getY();
+
+        if (x - 1 < 1 | y - 1 < 1) {
+            return true;
+        }
+        if (x + 1 > MAX_X | y + 1 > MAX_Y) {
+            return true;
+        }
+        return false;
+    }
+
+    public Coordinates getNearbyEmptyCoordinates(Coordinates startCoordinates) {
+        Random random = new Random();
+        int x = startCoordinates.getX();
+        int y = startCoordinates.getY();
+
+        List<Coordinates> offsetCoordinates = new ArrayList<>() {{
+            add(new Coordinates(x - 1, y));
+            add(new Coordinates(x + 1, y));
+            add(new Coordinates(x, y - 1));
+            add(new Coordinates(x, y + 1));
+        }};
+
+
+        for (int i = 0; i < 10; i++) {
+            int randomIndex = random.nextInt(offsetCoordinates.size());
+            Coordinates coordinates = offsetCoordinates.get(randomIndex);
+            if (coordinateIsEmpty(coordinates) & !coordinateIsOutsideOfMap(coordinates)) {
+                return coordinates;
+            }
+        }
+
+        return startCoordinates;
+    }
+
     private Coordinates getRandomCoordinates() {
         Random random = new Random();
         int x = random.nextInt(MAX_X) + 1;
@@ -48,7 +85,6 @@ public class Map {
     }
 
     public <T> List<T> getListEntitiesByClass(Class<T> type) {
-
         List<T> result = new ArrayList<>();
         List<Entity> entities = entityStorage.values().stream().toList();
 
@@ -72,7 +108,6 @@ public class Map {
         }
         return (Rock.class.isAssignableFrom(entity.getClass()) | Tree.class.isAssignableFrom(entity.getClass()));
     }
-
 
     public void setEntity(Entity entity, Coordinates coordinates) {
         entity.setCoordinates(coordinates);
