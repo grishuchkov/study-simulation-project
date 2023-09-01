@@ -32,7 +32,7 @@
 ### Быстрый старт:
 
 1. Клонируйте репозиторий:  
-   `git clone https://github.com/grishuchkov/simulation-project.git`
+   `git clone https://github.com/grishuchkov/study-simulation-project.git`
 
 2. Для сборки проекта используйте стандартную команду: `gradle clean build`.
 3. Это создаст `simulation-project-1.0-SNAPSHOT.jar` в каталоге `build/libs`, теперь приложение доступно для запуска с использованием `java -jar simulation-project-1.0-SNAPSHOT.jar`. Командная строка должна находиться в директории `build/libs`.
