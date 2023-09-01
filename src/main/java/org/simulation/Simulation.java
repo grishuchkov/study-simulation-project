@@ -7,7 +7,8 @@ import org.simulation.action.spawn.creature.HerbivoreSpawnAction;
 import org.simulation.action.spawn.creature.PredatorSpawnAction;
 import org.simulation.action.spawn.statics.RockSpawnAction;
 import org.simulation.action.spawn.statics.TreeSpawnAction;
-import org.simulation.entities.creature.Herbivore;
+import org.simulation.renderer.ConsoleRenderer;
+import org.simulation.renderer.Renderer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,36 +17,39 @@ public class Simulation {
     private final Map worldMap = new Map();
     private final Renderer consoleRenderer = new ConsoleRenderer(worldMap);
     private final MoveAction moveAction = new MoveAction(worldMap);
-    private boolean onPause = false;
+    private volatile boolean onPause = true;
+    private int stepsOfSimulation = 0;
+
+    public void setPause(boolean pause) {
+        onPause = pause;
+    }
 
     private void init() {
         initAction(worldMap);
-        consoleRenderer.render();
     }
 
-    public void nextTurn() {
+    public synchronized void nextTurn() {
         moveAction.perform();
         consoleRenderer.render();
+        stepsOfSimulation += 1;
+        System.out.println("Step: " + stepsOfSimulation);
     }
 
-    public void startSimulation() {
+    public void startSimulation() throws InterruptedException {
         init();
-        while (!onPause & !gameOff()) {
+
+        while (moveAction.hasNextStep()) {
+            while (onPause) {
+                Thread.sleep(1000);
+            }
             nextTurn();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
-    }
-
-    public void pauseSimulation() {
-
-    }
-
-    private boolean gameOff() {
-        List<Herbivore> herbivores = worldMap.getListEntitiesByClass(Herbivore.class);
-        if (herbivores.isEmpty()) {
-            System.out.println("Simulation is done");
-            return true;
-        }
-        return false;
+        System.out.println("Simulation is Done. Total steps of simulation: " + stepsOfSimulation);
     }
 
     private void initAction(Map map) {
