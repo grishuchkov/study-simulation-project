@@ -24,7 +24,8 @@
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)  
-- Для поиска пути используется: упрощенный алгоритм A*.
+- Для поиска пути используется: упрощенный алгоритм A*.  
+В качестве опорного расстояния для формирования эвристической функции используется [расстояние Чебышёва](https://www.translatorscafe.com/unit-converter/ru-RU/calculator/two-points-distance/?D=2&amp;x1=3&amp;y1=3.5&amp;x2=-5.1&amp;y2=-5.2#chebyshev-distance).
 
 ---
 <a name="start"></a>
