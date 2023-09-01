@@ -1,10 +1,10 @@
-package org.simulation.entities.creature;
+package org.simulation.entity.creature;
 
-import org.simulation.AStarPathSearcher;
 import org.simulation.Coordinates;
 import org.simulation.Map;
-import org.simulation.PathSearcher;
-import org.simulation.entities.Entity;
+import org.simulation.entity.Entity;
+import org.simulation.searcher.AStarPathSearcher;
+import org.simulation.searcher.PathSearcher;
 
 import java.util.List;
 import java.util.Random;

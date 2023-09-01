@@ -1,16 +1,18 @@
-package org.simulation;
+package org.simulation.searcher;
 
-import org.simulation.entities.Entity;
-import org.simulation.entities.Grass;
-import org.simulation.entities.creature.Herbivore;
-import org.simulation.entities.creature.Predator;
+import org.simulation.Coordinates;
+import org.simulation.Map;
+import org.simulation.entity.Entity;
+import org.simulation.entity.Grass;
+import org.simulation.entity.creature.Herbivore;
+import org.simulation.entity.creature.Predator;
 
 import java.util.*;
 
 
 public class AStarPathSearcher implements PathSearcher {
     @Override
-    public List<Coordinates> findPath(Entity startEntity, Map map) {
+    public List<Coordinates> findPath(Entity startEntity, org.simulation.Map map) {
 
         Optional<List<? extends Entity>> targetListOptional = Optional.ofNullable(setTargetListForEntityByClass(map, startEntity.getClass()));
         List<Coordinates> finalRoute = new ArrayList<>();
@@ -49,7 +51,7 @@ public class AStarPathSearcher implements PathSearcher {
         return targetEntities.get(minDistanceEntityIndex).getCoordinates();
     }
 
-    private List<Coordinates> aStarSearchAlgorithm(Coordinates start, Coordinates target, Map map) {
+    private List<Coordinates> aStarSearchAlgorithm(Coordinates start, Coordinates target, org.simulation.Map map) {
 
         HashMap<Coordinates, SearchNode> closed = new HashMap<>();
 
@@ -112,7 +114,7 @@ public class AStarPathSearcher implements PathSearcher {
         return route;
     }
 
-    private List<SearchNode> getNeighbors(SearchNode node, Map map) {
+    private List<SearchNode> getNeighbors(SearchNode node, org.simulation.Map map) {
         List<SearchNode> neighbors = new ArrayList<>();
 
         if (node.getX() - 1 > 0) {
@@ -131,7 +133,7 @@ public class AStarPathSearcher implements PathSearcher {
         return neighbors;
     }
 
-    private static void removeUnsuitableNeighbours(List<SearchNode> neighbors, Map map, SearchNode startNode) {
+    private static void removeUnsuitableNeighbours(List<SearchNode> neighbors, org.simulation.Map map, SearchNode startNode) {
         Iterator<SearchNode> searchNodeIterator = neighbors.iterator();
 
         while (searchNodeIterator.hasNext()) {
@@ -143,7 +145,7 @@ public class AStarPathSearcher implements PathSearcher {
         }
     }
 
-    private static boolean isUnsuitableNeighbours(SearchNode startEntity, SearchNode neighboursNode, Map map) {
+    private static boolean isUnsuitableNeighbours(SearchNode startEntity, SearchNode neighboursNode, org.simulation.Map map) {
         Coordinates neighboursCoordinates = neighboursNode.getCoordinates();
 
         if (map.coordinateIsEmpty(neighboursCoordinates)) {
@@ -157,11 +159,8 @@ public class AStarPathSearcher implements PathSearcher {
                 (Predator.class.isAssignableFrom(neighboursClass) | Herbivore.class.isAssignableFrom(neighboursClass))) {
             return true;
         }
-        if (Predator.class.isAssignableFrom(startEntityClass) &
-                (Grass.class.isAssignableFrom(neighboursClass) | Predator.class.isAssignableFrom(neighboursClass))) {
-            return true;
-        }
-        return false;
+        return Predator.class.isAssignableFrom(startEntityClass) &
+                (Grass.class.isAssignableFrom(neighboursClass) | Predator.class.isAssignableFrom(neighboursClass));
     }
 
 

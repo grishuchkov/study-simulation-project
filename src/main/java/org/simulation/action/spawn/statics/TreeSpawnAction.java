@@ -3,7 +3,7 @@ package org.simulation.action.spawn.statics;
 import org.simulation.Coordinates;
 import org.simulation.Map;
 import org.simulation.action.spawn.SpawnAction;
-import org.simulation.entities.statics.Tree;
+import org.simulation.entity.statics.Tree;
 
 public class TreeSpawnAction extends SpawnAction<Tree> {
     public TreeSpawnAction(Map map) {

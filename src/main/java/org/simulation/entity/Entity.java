@@ -1,4 +1,4 @@
-package org.simulation.entities;
+package org.simulation.entity;
 
 import org.simulation.Coordinates;
 import org.simulation.Map;

@@ -3,7 +3,7 @@ package org.simulation.action.spawn;
 import org.simulation.Coordinates;
 import org.simulation.Map;
 import org.simulation.action.Action;
-import org.simulation.entities.Entity;
+import org.simulation.entity.Entity;
 
 public abstract class SpawnAction<T extends Entity> extends Action {
     protected int rate;

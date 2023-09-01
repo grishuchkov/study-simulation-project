@@ -1,10 +1,12 @@
-package org.simulation;
+package org.simulation.renderer;
 
-import org.simulation.entities.Entity;
+import org.simulation.Coordinates;
+import org.simulation.Map;
+import org.simulation.entity.Entity;
 
 public class ConsoleRenderer implements Renderer {
 
-    private Map map;
+    private final Map map;
 
     public ConsoleRenderer(Map map) {
         this.map = map;

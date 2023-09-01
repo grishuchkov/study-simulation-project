@@ -2,7 +2,7 @@ package org.simulation.action.spawn;
 
 import org.simulation.Coordinates;
 import org.simulation.Map;
-import org.simulation.entities.Grass;
+import org.simulation.entity.Grass;
 
 public class GrassSpawnAction extends SpawnAction<Grass> {
     public GrassSpawnAction(Map map) {

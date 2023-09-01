@@ -1,8 +1,8 @@
-package org.simulation.entities.statics;
+package org.simulation.entity.statics;
 
 import org.simulation.Coordinates;
 import org.simulation.Map;
-import org.simulation.entities.Entity;
+import org.simulation.entity.Entity;
 
 public class Tree extends Entity {
     public Tree(Coordinates coordinates, Map map) {

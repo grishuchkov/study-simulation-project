@@ -1,9 +1,9 @@
 package org.simulation;
 
-import org.simulation.entities.Entity;
-import org.simulation.entities.creature.Creature;
-import org.simulation.entities.statics.Rock;
-import org.simulation.entities.statics.Tree;
+import org.simulation.entity.Entity;
+import org.simulation.entity.creature.Creature;
+import org.simulation.entity.statics.Rock;
+import org.simulation.entity.statics.Tree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,10 +43,7 @@ public class Map {
         if (x - 1 < 1 | y - 1 < 1) {
             return true;
         }
-        if (x + 1 > MAX_X | y + 1 > MAX_Y) {
-            return true;
-        }
-        return false;
+        return x + 1 > MAX_X | y + 1 > MAX_Y;
     }
 
     public Coordinates getNearbyEmptyCoordinates(Coordinates startCoordinates) {

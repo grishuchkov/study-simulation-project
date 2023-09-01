@@ -3,7 +3,7 @@ package org.simulation.action.spawn.creature;
 import org.simulation.Coordinates;
 import org.simulation.Map;
 import org.simulation.action.spawn.SpawnAction;
-import org.simulation.entities.creature.Predator;
+import org.simulation.entity.creature.Predator;
 
 public class PredatorSpawnAction extends SpawnAction<Predator> {
     public PredatorSpawnAction(Map map) {
